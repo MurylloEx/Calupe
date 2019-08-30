@@ -1,22 +1,162 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link type="text/css" href="calupe.style.css" rel="stylesheet">
+<!--
+Created using JS Bin
+http://jsbin.com
 
-    <title>Calupe</title>
+Copyright (c) 2019 by anonymous (http://jsbin.com/vobeliquho/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>UPE - Calupe</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<style id="jsbin-css">
+* {
+  margin:0;
+  padding:0;
+}
+
+body {
+  min-width:512px;
+}
+
+.mainTopDiv {
+  background-image:url(https://www.siga.upe.br/upe/imagens/azul/fundoGeral.png);
+  background-repeat:repeat-x;
+  height:112px;
+  padding-top:10px;
+  position:relative;
+}
+
+.upeLogo{
+  background-image:url(https://www.siga.upe.br/upe/imagens/logosInstituicoes/upe.png);
+  height:57px;
+  width:128px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.userDetails{
+  background-color:#10ff0010;
+  position:relative;
+  margin-top:8px;
+  height:37px;
+  padding-left:6px;
+  padding-right:6px;
+  width:100%;
+  color:white;
+  font-family: Droid, sans-serif;
+  font-size:12px;
+  line-height:37px;
+  display:flex;
+  overflow:hidden;
+}
+
+.mainMenuButton {
+  background-image:url(https://cdn.discordapp.com/attachments/388500399218360322/616330475316838454/DESGRACA.png);
+  background-repeat:no-repeat;
+  background-size:40px 37px;
+  height:37px;
+  width:40px;
+  top:75px;
+  left:0;
+}
+
+.mainMenuButton:hover{
+  background-image:url(https://cdn.discordapp.com/attachments/388500399218360322/616338110799675402/DESGRACA.png)
+}
+
+.itemsMenu{
+  margin-left:12px;
+  color:white;
+  font-family:Droid, sans-serif;
+  padding-left:6px;
+  padding-right:6px;
+  font-family: "Times New Roman", Times, serif;
+  font-size:15px;
+}
+
+.itemsMenu:hover{
+  text-decoration:none;
+  color:lightgray;
+}
+
+.mainMenuDeactived{
+  position:absolute;
+  height:100vh;
+  width:270px;
+  background-color:#194a8d;
+  transform: translateX(-300px);
+  transition-duration:.4s;
+  z-index:99;
+}
+
+.mainMenu{
+  position:absolute;
+  height:100vh;
+  width:270px;
+  background-color:#194a8d;
+  transition-duration:1s;
+  z-index:99;
+}
+
+.blackBackground{
+  position:relative;
+  z-index:98;
+  background-color:#0000007f;
+  height:100vh;
+  width:100%;
+}
+</style>
 </head>
 <body>
-    <script src="calupe.utils.js"></script>
-    <script src="jquery-3.4.1.js"></script>
-
-    <header class="topHeader">
-        <div class="mainMenuButton">
-        
-        </div>
-    </header>
+  <div class="mainTopDiv">
+    <div class="upeLogo"></div>
+    <div class="userDetails">
+      <div class="mainMenuButton" onclick="changeMenuState();"></div>
+      <a href="javascript:alert('ghfgh');" class="itemsMenu">Reservas</a>
+      <a href="javascript:alert('ghfgh');" class="itemsMenu">Calendários</a>
+      <a href="javascript:alert('ghfgh');" class="itemsMenu">Fale Conosco</a>
+    </div>
+  </div>
+  <div id="menuId" class="mainMenuDeactived mainMenu">
     
+  </div>
+  <div id="bgContainer" onclick="changeMenuState();"></div>
+<script id="jsbin-javascript">
+function changeMenuState(){
+  if ($("#menuId").hasClass("mainMenuDeactived")){
+    //Expandir o menu lateral
+    $("#menuId").removeClass("mainMenuDeactived");
+    $("#bgContainer").addClass("blackBackground");
+  }
+  else{
+    //Contrair o menu principal
+    $("#menuId").addClass("mainMenuDeactived");
+    $("#bgContainer").removeClass("blackBackground");
+  }
+}
+
+
+function SetHtmlById(elementId, htmlText){
+  $("#".concat(elementId)).html(htmlText);
+}
+
+function OpenAjax(remoteAddr, method, successCallback, errorCallback, ){
+  $.ajax({
+    url: remoteAddr,
+    type: method,
+    success: successCallback,
+    
+  });
+}
+</script>
 </body>
 </html>

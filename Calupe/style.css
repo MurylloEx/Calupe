@@ -1,0 +1,132 @@
+* {
+  margin:0;
+  padding:0;
+}
+
+body {
+  min-width:512px;
+}
+
+.mainTopDiv {
+  background-image:url(https://www.siga.upe.br/upe/imagens/azul/fundoGeral.png);
+  background-repeat:repeat-x;
+  height:112px;
+  padding-top:10px;
+  position:relative;
+}
+
+.upeLogo{
+  background-image:url(https://www.siga.upe.br/upe/imagens/logosInstituicoes/upe.png);
+  height:57px;
+  width:128px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.userDetails{
+  background-color:#10ff0010;
+  position:relative;
+  margin-top:8px;
+  height:37px;
+  padding-left:6px;
+  padding-right:6px;
+  width:100%;
+  color:white;
+  font-family: Droid, sans-serif;
+  font-size:12px;
+  line-height:37px;
+  display:flex;
+  overflow:hidden;
+}
+
+.mainMenuButton {
+  background-image:url(https://cdn.discordapp.com/attachments/388500399218360322/616330475316838454/DESGRACA.png);
+  background-repeat:no-repeat;
+  background-size:40px 37px;
+  height:37px;
+  width:40px;
+  top:75px;
+  left:0;
+}
+
+.mainMenuButton:hover{
+  background-image:url(https://cdn.discordapp.com/attachments/388500399218360322/616338110799675402/DESGRACA.png)
+}
+
+.itemsMenu{
+  margin-left:12px;
+  color:white;
+  font-family:Droid, sans-serif;
+  padding-left:6px;
+  padding-right:6px;
+  font-family: "Times New Roman", Times, serif;
+  font-size:15px;
+}
+
+.itemsMenu:hover{
+  text-decoration:none;
+  color:lightgray;
+}
+
+.mainMenuDeactived{
+  position:absolute;
+  height:100vh;
+  width:270px;
+  background-color:#194a8d;
+  transform: translateX(-300px);
+  transition-duration:.4s;
+  z-index:99;
+}
+
+.mainMenu{
+  position:absolute;
+  height:100vh;
+  width:270px;
+  background-color:#194a8d;
+  padding-bottom:10px;
+  transition-duration:1s;
+  z-index:99;
+  border-right:1px solid #10315e;
+}
+
+.blackBackground{
+  position:relative;
+  z-index:98;
+  background-color:#0000007f;
+  height:100vh;
+  width:100%;
+}
+
+.calupeLogo {
+  margin-top:15px;
+  margin-left:auto;
+  margin-right:auto;
+  border-bottom:1px solid lightgray;
+  width:256px;
+  height:72px;
+  background-image:url(https://i.imgur.com/Jkt05l3.png);
+  background-repeat:no-repeat;
+}
+
+.mainMenuItems{
+  margin-top:10px;
+  margin-left:auto;
+  margin-right:auto;
+  width:256px;
+  padding:5px;
+  text-align:left;
+}
+
+.mainMenuItems a {
+  width:100%;
+  line-height:36px;
+  display:inline-block;
+  text-decoration:none;
+  text-indent:15px;
+  color:white;
+}
+
+.mainMenuItems a:hover{
+  color:gray;
+  background-color:#ffffff2f;
+}

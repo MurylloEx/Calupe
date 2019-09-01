@@ -89,7 +89,18 @@ var Base64 = {
     }
 }
 
+/**
+ * Programado por Muryllo 31/08/2019 às 23:41
+ */
 var CookieSessionManager = {
+    /**
+     * Cria um cookie.
+     * 
+     * @param {string} cookieName 
+     * @param {string} cookieValue 
+     * @param {number} cookieDurationInMsec 
+     * @param {string} cookiePath 
+     */
     SetCookie: function(cookieName, cookieValue, cookieDurationInMsec, cookiePath){
         var date = new Date();
         date.setTime(date.getTime() + cookieDurationInMsec);
@@ -97,6 +108,11 @@ var CookieSessionManager = {
             document.cookie = cookieName + "=" + cookieValue + "; expires=" + date.toUTCString() + "; path=" + cookiePath + ";";
         }
     },
+    /**
+     * Retorna o valor contido em um cookie.
+     * 
+     * @param {string} cookieName 
+     */
     GetCookie: function(cookieName){
         var cookies = document.cookie.split(";");
         for (k = 0; k < cookies.length; k++){
@@ -107,18 +123,31 @@ var CookieSessionManager = {
         }
         return null;
     },
-    DeleteCookie: function(cookieName){
-        //teste
-        return null;
+    /**
+     * Deleta um cookie.
+     * 
+     * @param {string} cookieName 
+     * @param {string} cookiePath 
+     */
+    DeleteCookie: function(cookieName, cookiePath){
+        var date = new Date();
+        date.setTime(date.getTime() - 100*365*24*60*60*1000);
+        document.cookie = cookieName + "=; expires=" + date.toUTCString() + "; path=" + cookiePath + ";";
     }
 }
 
-//Transforma em Base64 a string username e password n vezes onde
-//o retorno é igual a um JSON reutilizável.
-//
-//          RETORNO: JSON OBJETO CONTENDO A SESSÃO.
-//
-//Programado por Muryllo 29/08/2019 às 19:04.
+/**
+ * Transforma em Base64 a string username e password n vezes onde o retorno é igual a um JSON reutilizável.
+ * 
+ * RETORNO: JSON OBJETO CONTENDO A SESSÃO.
+ * 
+ * Programado por Muryllo 29/08/2019 às 19:04.
+ * 
+ * @param {string} username Nome da conta do usuário.
+ * @param {string} password Senha da conta do usuário.
+ * @param {number} n Número de iterações de codificação em Base64 das credenciais.
+ * @param {*} reserved Parâmetro reservado, deve passar NULL.
+ */
 function CreateSession(username, password, n, reserved){
     var encUser = username;
     var encPass = password;
@@ -134,18 +163,37 @@ function CreateSession(username, password, n, reserved){
     });
 }
 
+/**
+ * 
+ * @param {JSON} sessionObject 
+ */
 function StartSession(sessionObject){
     var sessObj = JSON.parse(Base64.decode(sessionObject));
     var ulc = sessObj.ul;
     var plc = sessObj.pl;
-    return null;
+    CookieSessionManager.SetCookie("crd", sessObj.crd, 0x5265C00, "/");
+    CookieSessionManager.SetCookie("ul", ulc, 0x5265C00, "/");
+    CookieSessionManager.SetCookie("pl", plc, 0x5265C00, "/");
+    CookieSessionManager.SetCookie("reserv1", sessObj.reserved1, 0x5265C00, "/");
 }
 
-//Retorna o texto associado a qualquer erro interno do Calupe.
-//
-//          MESSAGE: Erro interno do Calupe.
-//
-//Programado por Muryllo e Emílio
+/**
+ * Destrói a sessão do usuário.
+ */
+function DestroySession(){
+    CookieSessionManager.DeleteCookie("crd", "/");
+    CookieSessionManager.DeleteCookie("ul", "/");
+    CookieSessionManager.DeleteCookie("pl", "/");
+    CookieSessionManager.DeleteCookie("reserv1", "/");
+}
+
+/**
+ * Retorna o texto associado a qualquer erro interno do Calupe.
+ * 
+ * Programado por Muryllo e Emílio
+ * 
+ * @param {*} message A mensagem de status retornada pelo Calupe.
+ */
 function GetMessageString(message){
     if (typeof(message) == "string"){
         switch (message.toUpperCase()){
@@ -328,28 +376,100 @@ function GetMessageString(message){
     }
 }
 
-
 //Define um valor htmlText a ser posto em um element de id elementId.
+/**
+ * 
+ * @param {string} elementId ID do elemento a ser modificado.
+ * @param {string} htmlText Valor contendo HTML em forma de string.
+ */
 function SetHtmlById(elementId, htmlText){
     $("#".concat(elementId)).html(htmlText);
 }
 
-//Veja o modelo de um callback de retorno AJAX.
-//https://stackoverflow.com/questions/377644/jquery-ajax-error-handling-show-custom-exception-messages
-//
-//      REMOTEADDR: "www.url.com/file"
-//      METHOD:     "GET" / "POST"
-//      SUCCESS:    function (data, text)
-//      ERROR:      function (jqXHR, status, errorThrown)
-//
-//USE SOMENTE ESSE MODELO DE FUNÇÃO PARA FAZER REQUISIÇÕES HTTP!
-//Programado por Muryllo 29/08/2019 às 18:36.
-function OpenAjax(remoteAddr, method, successCallback, errorCallback){
+/**
+ * Veja o modelo de um callback AJAX. https://stackoverflow.com/questions/377644/jquery-ajax-error-handling-show-custom-exception-messages
+ * 
+ * Use somente esse modelo de função para fazer requisições HTTP!
+ * 
+ * Programado por Muryllo 29/08/2019 às 18:36. 
+ * 
+ * @param {string} remoteAddr 
+ * @param {string} method 
+ * @param {function} successCallback 
+ * @param {function} errorCallback 
+ * @param {*} dataObj 
+ * @param {string} dataObjType 
+ */
+function OpenAjax(remoteAddr, method, successCallback, errorCallback, dataObj, dataObjType){
     return $.ajax({
         url: remoteAddr,
         type: method,
         success: successCallback,
-        error: errorCallback
+        error: errorCallback,
+        data: dataObj,
+        dataType: dataObjType
     });
 }
 
+/**
+ * API interna do Calupe, disponível para front-end.
+ * Documentação disponível para a equipe de programadores.
+ */
+var CalupeInternalAPI = {
+    //Public API functions;
+    RetrieveLabs:function(){
+
+    },
+    RetrieveLabById:function(){
+
+    },
+    RetrieveReservs:function(){
+
+    },
+    RetrieveReservById:function(){
+
+    },
+    //Protected by ADMIN permission functions;
+    RetrieveAllUsers:function(){
+
+    },
+    RetrieveUserById:function(){
+
+    },
+    //POST functions;
+    RegisterNewUser:function(){
+        
+    },
+    RegisterNewLab:function(){
+
+    },
+    RegisterNewReserv:function(){
+
+    },
+    //Login function
+    CalupeAuth0: function(){
+
+    }
+}
+
+class CalupeEvents {
+
+    constructor(){
+
+    }
+
+    OnRetrieveLabs(){}
+    OnRetrieveLabById(){}
+    OnRetrieveReservs(){}
+    OnRetrieveReservsById(){}
+    OnRetrieveAllUsers(){}
+    OnRetrieveUserById(){}
+    OnRegisterNewUser(){}
+    OnRegisterNewLab(){}
+    OnRegisterNewReserv(){}
+    OnCallupeAuthSuccess(){}
+
+    //Exceções não tratadas devem ser redirecionadas aqui por padrão.
+    OnRaiseCriticalError(){}
+    
+}

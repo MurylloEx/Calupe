@@ -14,32 +14,46 @@ Released under the MIT license: http://jsbin.mit-license.org
   <meta name="viewport" content="width=device-width">
   <title>UPE - Calupe</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  
+  
+  <link rel="stylesheet" href="calupe.style.css">
+  <script src="calupe.utils.js"></script>
+  <script src="calupe.design.js"></script>
 </head>
 <body>
-  <header class="mainTopDiv">
-    <div class="upeLogo"></div>
-    <div class="userDetails">
-      <div class="mainMenuButton" onclick="changeMenuState();"></div>
-      <a href="javascript:alert('ghfgh');" class="itemsMenu">Reservas</a>
-      <a href="javascript:alert('ghfgh');" class="itemsMenu">Calendários</a>
-      <a href="javascript:alert('ghfgh');" class="itemsMenu">Fale Conosco</a>
+  <div>
+    <header class="mainTopDiv">
+      <div class="upeLogo"></div>
+      <div class="userDetails">
+        <div class="mainMenuButton" onclick="changeMenuState();"></div>
+        <a href="javascript:alert('ghfgh');" class="itemsMenu">PolÃ­tica de uso dos laboratÃ³rios</a>
+        <a href="javascript:alert('ghfgh');" class="itemsMenu">Fale conosco</a>
+        <a href="javascript:alert('ghfgh');" class="itemsMenu">Sobre o CALUPE</a>
+      </div>
+      <div class="userSettings">
+        <!--
+        Inserir aqui as informaÃ§Ãµes do usuÃ¡rio, como nome por exemplo.
+        -->
+      </div>
+    </header>
+    <div class="container-fluid all-content p-0">
+      <div id="menuId" class="mainMenuDeactived mainMenu">
+      <div class="calupeLogo"></div>
+      <div class="mainMenuItems">
+        <a href="javascript:alert('2')">Reservas</a>
+        <a href="javascript:alert('3')">LaboratÃ³rios</a>
+        <a href="javascript:alert('4')">Meus dados</a>
+        <a href="javascript:alert('5')">PreferÃªncias</a>
+      </div>
     </div>
-  </header>
-  <div id="menuId" class="mainMenuDeactived mainMenu">
-    <div class="calupeLogo"></div>
-    <div class="mainMenuItems">
-      <a href="javascript:alert('hfghfgh')">Página inicial</a>
-      <a href="javascript:alert('hfghfgh')">Calendários</a>
-      <a href="javascript:alert('hfghfgh')">Usuários no CALUPE</a>
-      <a href="javascript:alert('hfghfgh')">Reservas de laboratórios</a>
-      <a href="javascript:alert('hfghfgh')">Preferências</a>
-      <a href="javascript:alert('hfghfgh')">Painel administrativo</a>
+    <div id="bgContainer" onclick="changeMenuState();"></div>
+      <div id="test3">
+        
+      </div>
     </div>
   </div>
-  <div id="bgContainer" onclick="changeMenuState();"></div>
-
 </body>
 </html>

@@ -1,0 +1,162 @@
+* {
+  margin:0;
+  padding:0;
+}
+
+body {
+  min-width:512px;
+  min-height:100vh;
+  padding-bottom:5px;
+  overflow-y:hidden;
+}
+
+.mainTopDiv {
+  background-image:url(https://i.imgur.com/An7lLKa.png);
+  background-repeat:repeat-x;
+  height:112px;
+  padding-top:10px;
+  position:relative;
+}
+
+.upeLogo{
+  background-image:url(https://i.imgur.com/dmWHlqv.png);
+  height:57px;
+  width:128px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.userDetails{
+  background-color:#10ff0010;
+  position:relative;
+  margin-top:8px;
+  height:37px;
+  padding-left:6px;
+  padding-right:6px;
+  width:100%;
+  color:white;
+  font-size:12px;
+  line-height:37px;
+  display:flex;
+  overflow:hidden;
+}
+
+.mainMenuButton {
+  background-image:url(https://i.imgur.com/ihRXFql.png);
+  background-repeat:no-repeat;
+  background-size:40px 37px;
+  height:37px;
+  width:40px;
+  top:75px;
+  left:0;
+}
+
+.mainMenuButton:hover{
+  background-image:url(https://i.imgur.com/5hzeSrh.png)
+}
+
+.itemsMenu{
+  margin-left:12px;
+  color:white;
+  font-family:"Droid", sans-serif;
+  padding-left:6px;
+  padding-right:6px;
+  font-size:12px;
+}
+
+.itemsMenu:hover{
+  text-decoration:none;
+  color:lightgray;
+}
+
+.mainMenuDeactived{
+  position:absolute;
+  height:calc(100% + 30px);
+  width:270px;
+  background-color:#194a8d;
+  transform: translateX(-300px);
+  -ms-transform: translateX(-300px);
+  -webkit-transform: translateX(-300px);
+  -o-transform: translateX(-300px);
+  -moz-transform: translateX(-300px);
+  transition: ease all .8s;
+  z-index:99;
+}
+
+.mainMenu{
+  position:absolute;
+  height:calc(100% + 30px);
+  width:270px;
+  background-color:#194a8d;
+  padding-bottom:10px;
+  transition: ease all .8s;
+  z-index:99;
+  border-right:1px solid #10315e;
+}
+
+.blackBackground{
+  position:absolute;
+  z-index:98;
+  background-color:#0000007f;
+  height:100%;
+  width:100%;
+  min-width:512px;
+  height:calc(100% + 30px);
+}
+
+.calupeLogo {
+  margin-top:15px;
+  margin-left:auto;
+  margin-right:auto;
+  border-bottom:1px solid lightgray;
+  width:256px;
+  height:72px;
+  background-image:url(https://i.imgur.com/Jkt05l3.png);
+  background-repeat:no-repeat;
+}
+
+.mainMenuItems{
+  margin-top:10px;
+  margin-left:auto;
+  margin-right:auto;
+  width:256px;
+  padding:5px;
+  text-align:left;
+}
+
+.mainMenuItems a {
+  width:100%;
+  line-height:36px;
+  display:inline-block;
+  text-decoration:none;
+  color:white;
+  text-indent:10px;
+  margin-top:5px;
+}
+
+.mainMenuItems a:hover{
+  color:gray;
+  background-color:#ffffff2f;
+  border-left:4px solid darkorange;
+}
+
+.userSettings {
+  background: #f2f2f2;
+  border-bottom: 1px solid #ccc;
+  height: 30px;
+  width: 100%;
+  position:relative;
+}
+
+.all-content {
+  padding:5px;
+}
+
+#test3{
+  position:absolute;
+  top:142px;
+  width:100%;
+  min-width:512px;
+  height:100%;
+  overflow-y:scroll;
+}

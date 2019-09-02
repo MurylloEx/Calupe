@@ -143,14 +143,14 @@ var CookieSessionManager = {
  * 
  * Programado por Muryllo 29/08/2019 às 19:04.
  * 
- * @param {string} username Nome da conta do usuário.
+ * @param {string} user Usuário (email do usuário).
  * @param {string} password Senha da conta do usuário.
  * @param {number} n Número de iterações de codificação em Base64 das credenciais.
  * @param {*} reserved Parâmetro reservado, deve passar NULL.
  */
-function CreateSession(username, password, n, reserved){
-    var encUser = username;
-    var encPass = password;
+function CreateSession(user, password, n, reserved){
+    let encUser = user;
+    let encPass = password;
     for (k = 0; k < n; k++){
         encUser = Base64.encode(encUser);
         encPass = Base64.encode(encPass);
@@ -164,17 +164,39 @@ function CreateSession(username, password, n, reserved){
 }
 
 /**
+ * Inicia uma nova sessão de usuário a partir de um objeto de sessão.
  * 
- * @param {JSON} sessionObject 
+ * @param {JSON} sessionObject Objeto contendo a sessão do usuário.
  */
 function StartSession(sessionObject){
-    var sessObj = JSON.parse(Base64.decode(sessionObject));
-    var ulc = sessObj.ul;
-    var plc = sessObj.pl;
+    let sessObj = JSON.parse(sessionObject);
+    let ulc = sessObj.ul;
+    let plc = sessObj.pl;
     CookieSessionManager.SetCookie("crd", sessObj.crd, 0x5265C00, "/");
     CookieSessionManager.SetCookie("ul", ulc, 0x5265C00, "/");
     CookieSessionManager.SetCookie("pl", plc, 0x5265C00, "/");
     CookieSessionManager.SetCookie("reserv1", sessObj.reserved1, 0x5265C00, "/");
+}
+/**
+ * Lê a sessão atual e retorna um objeto contendo as credenciais do usuário.
+ * 
+ * @param {number} n Número de iterações de codificação em Base64 das credenciais.
+ */
+function ReadCurrentSession(n){
+    let __ul = CookieSessionManager.GetCookie("ul");
+    let __pl = CookieSessionManager.GetCookie("pl");
+    let __crd = Base64.decode(CookieSessionManager.GetCookie("crd"));
+    let __user = __crd.substr(0, __ul);
+    let __pass = __crd.substr(__ul, __pl);
+    for (k = 0; k < n; k++){
+        __user = Base64.decode(__user);
+        __pass = Base64.decode(__pass);
+    }
+    return {
+        user: __user,
+        password: __pass,
+        reserved1: CookieSessionManager.GetCookie("reserv1")
+    };
 }
 
 /**
@@ -393,12 +415,12 @@ function SetHtmlById(elementId, htmlText){
  * 
  * Programado por Muryllo 29/08/2019 às 18:36. 
  * 
- * @param {string} remoteAddr 
- * @param {string} method 
- * @param {function} successCallback 
- * @param {function} errorCallback 
- * @param {*} dataObj 
- * @param {string} dataObjType 
+ * @param {string} remoteAddr Endereço remoto o qual se fará a requisição;
+ * @param {string} method Método da requisição (GET ou POST);
+ * @param {function} successCallback Callback de retorno quando a requisição for um sucesso;
+ * @param {function} errorCallback Callback de retorno quando a requisição for um fracasso;
+ * @param {*} dataObj Dados a serem enviados, caso não haja passe null;
+ * @param {string} dataObjType Tipo de dados a ser enviado, caso haja. Caso não haja, passe null.
  */
 function OpenAjax(remoteAddr, method, successCallback, errorCallback, dataObj, dataObjType){
     return $.ajax({
@@ -416,60 +438,125 @@ function OpenAjax(remoteAddr, method, successCallback, errorCallback, dataObj, d
  * Documentação disponível para a equipe de programadores.
  */
 var CalupeInternalAPI = {
+
     //Public API functions;
-    RetrieveLabs:function(){
-
+    /**
+     * 
+     * @param {CalupeEvents} pcalupeEvts 
+     */
+    RetrieveLabs:function(pcalupeEvts){
+        return OpenAjax("http://54.38.226.104/CalupeAPI/laboratorios", "GET", pcalupeEvts.OnRetrieveLabs, pcalupeEvts.OnRaiseCriticalError, null, null).readyState;
     },
-    RetrieveLabById:function(){
 
+    /**
+     * 
+     * @param {CalupeEvents} pcalupeEvts
+     * @param {number} labId 
+     */
+    RetrieveLabById:function(pcalupeEvts, labId){
+        return OpenAjax("http://54.38.226.104/CalupeAPI/laboratorios/" + labId.toString(), "GET", pcalupeEvts.OnRetrieveLabById, pcalupeEvts.OnRaiseCriticalError, null, null).readyState;
     },
-    RetrieveReservs:function(){
 
+    /**
+     * 
+     * @param {CalupeEvents} pcalupeEvts 
+     */
+    RetrieveReservs:function(pcalupeEvts){
+        return OpenAjax("http://54.38.226.104/CalupeAPI/reservas", "GET", pcalupeEvts.OnRetrieveReservs, pcalupeEvts.OnRaiseCriticalError, null, null).readyState;
     },
-    RetrieveReservById:function(){
 
+    /**
+     * 
+     * @param {CalupeEvents} pcalupeEvts 
+     * @param {number} reservId 
+     */
+    RetrieveReservById:function(pcalupeEvts, reservId){
+        return OpenAjax("http://54.38.226.104/CalupeAPI/reservas/" + reservId.toString(), "GET", pcalupeEvts.OnRetrieveReservsById, pcalupeEvts.OnRaiseCriticalError, null, null).readyState;
     },
+
     //Protected by ADMIN permission functions;
-    RetrieveAllUsers:function(){
+    /**
+     * 
+     * @param {CalupeEvents} pcalupeEvts 
+     */
+    RetrieveAllUsers:function(pcalupeEvts, username, password, userEmail, userCpf, phone){
+        return OpenAjax("http://54.38.226.104/CalupeAPI/usuarios/", 
+        "POST", 
+        pcalupeEvts.OnRegisterNewUser, 
+        pcalupeEvts.OnRaiseCriticalError, 
+        {
+            nome: username,
+            senha: password,
+            email: userEmail,
+            cpf: userCpf,
+            telefone:phone
+        }, "json");
+    },
+
+    RetrieveUserById:function(pcalupeEvts){
 
     },
-    RetrieveUserById:function(){
 
-    },
     //POST functions;
-    RegisterNewUser:function(){
+    RegisterNewUser:function(pcalupeEvts){
         
     },
-    RegisterNewLab:function(){
+
+    RegisterNewLab:function(pcalupeEvts){
 
     },
-    RegisterNewReserv:function(){
+
+    RegisterNewReserv:function(pcalupeEvts){
 
     },
-    //Login function
-    CalupeAuth0: function(){
 
+    /**
+     * Função de autenticação no Calupe.
+     * 
+     * @param {CalupeEvents} pcalupeEvts 
+     * @param {string} userEmail 
+     * @param {string} password 
+     */
+    CalupeAuth0: function(pcalupeEvts, userEmail, password){
+        return OpenAjax("http://54.38.226.104/CalupeAPI/usuarios/autenticar",
+                        "POST", pcalupeEvts.OnCallupeAuthSuccess, 
+                        pcalupeEvts.OnRaiseCriticalError, 
+                        {email: userEmail, senha: password}, "json").readyState;
     }
 }
 
 class CalupeEvents {
 
     constructor(){
-
+        console.log("classe instanciada!");
     }
 
-    OnRetrieveLabs(){}
-    OnRetrieveLabById(){}
-    OnRetrieveReservs(){}
-    OnRetrieveReservsById(){}
-    OnRetrieveAllUsers(){}
-    OnRetrieveUserById(){}
-    OnRegisterNewUser(){}
-    OnRegisterNewLab(){}
-    OnRegisterNewReserv(){}
-    OnCallupeAuthSuccess(){}
+    OnRetrieveLabs(data){}
+    OnRetrieveLabById(data){}
+    OnRetrieveReservs(data){}
+    OnRetrieveReservsById(data){}
+    OnRetrieveAllUsers(data){}
+    OnRetrieveUserById(data){}
+    OnRegisterNewUser(data){}
+    OnRegisterNewLab(data){}
+    OnRegisterNewReserv(data){}
+    OnCallupeAuthSuccess(data){
+        console.log(data);
+    }
 
     //Exceções não tratadas devem ser redirecionadas aqui por padrão.
     OnRaiseCriticalError(){}
     
 }
+
+//var calEvt = new CalupeEvents();
+
+//console.log(CalupeInternalAPI.CalupeAuth0(calEvt, "testador@upe.br", "teste"));
+
+var sess = CreateSession("muryllo", "123", 5, null);
+console.log(sess);
+StartSession(sess);
+
+console.log(ReadCurrentSession(5));
+
+DestroySession();

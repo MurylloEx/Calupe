@@ -429,7 +429,22 @@ function OpenAjax(remoteAddr, method, successCallback, errorCallback, dataObj, d
         success: successCallback,
         error: errorCallback,
         data: dataObj,
-        dataType: dataObjType
+        dataType: dataObjType,
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Headers':'x-requested-with'
+        }
+        /* crossDomain:true,
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Headers':'x-requested-with'
+            
+        },
+        xhrFields: {
+            withCredentials: true
+        } */
     });
 }
 
@@ -518,10 +533,10 @@ var CalupeInternalAPI = {
      * @param {string} password 
      */
     CalupeAuth0: function(pcalupeEvts, userEmail, password){
-        return OpenAjax("http://54.38.226.104/CalupeAPI/usuarios/autenticar",
+        return OpenAjax("http://54.38.226.104/CalupeAPI/usuarios/autenticar/",
                         "POST", pcalupeEvts.OnCallupeAuthSuccess, 
                         pcalupeEvts.OnRaiseCriticalError, 
-                        {email: userEmail, senha: password}, "json").readyState;
+                        JSON.stringify({email: userEmail, senha: password}), "json").readyState;
     }
 }
 
@@ -549,14 +564,14 @@ class CalupeEvents {
     
 }
 
-//var calEvt = new CalupeEvents();
+var calEvt = new CalupeEvents();
 
-//console.log(CalupeInternalAPI.CalupeAuth0(calEvt, "testador@upe.br", "teste"));
+console.log(CalupeInternalAPI.CalupeAuth0(calEvt, "testador@upe.br", "teste"));
 
-var sess = CreateSession("muryllo", "123", 5, null);
-console.log(sess);
-StartSession(sess);
+// var sess = CreateSession("muryllo", "123", 5, null);
+// console.log(sess);
+// StartSession(sess);
 
-console.log(ReadCurrentSession(5));
+// console.log(ReadCurrentSession(5));
 
-DestroySession();
+// DestroySession();

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by anonymous (http://jsbin.com/vobeliquho/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>UPE - Calupe</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <!-- Arquivos locais a serem carregados pela página. -->
+  <link rel="stylesheet" href="static/styles/calupe.style.css">
+  <link rel="stylesheet" href="static/styles/calupe.calendario.css">
+  <script src="static/scripts/calupe.utils.js"></script>
+  <script src="static/scripts/calupe.design.js"></script>
+</head>
+<body>
+  <div>
+    <header class="mainTopDiv">
+      <div class="upeLogo"></div>
+      <div class="userDetails">
+        <div class="mainMenuButton" onclick="changeMenuState();"></div>
+        <a href="javascript:alert('ghfgh');" class="itemsMenu">Política de uso dos laboratórios</a>
+        <a href="javascript:alert('ghfgh');" class="itemsMenu">Fale conosco</a>
+        <a href="javascript:alert('ghfgh');" class="itemsMenu">Sobre o CALUPE</a>
+      </div>
+      <div class="userSettings">
+        <!--
+        Inserir aqui as informações do usuário, como nome por exemplo.
+        -->
+      </div>
+    </header>
+    <div class="container-fluid all-content p-0">
+      <div id="menuId" class="mainMenuDeactived mainMenu">
+      <div class="calupeLogo"></div>
+      <div class="mainMenuItems">
+        <a href="javascript:alert('2')">Reservas</a>
+        <a href="javascript:alert('3')">Laboratórios</a>
+        <a href="javascript:alert('4')">Meus dados</a>
+        <a href="javascript:alert('5')">Preferências</a>
+      </div>
+    </div>
+    <div id="bgContainer" onclick="changeMenuState();"></div>
+      <div id="mainframe">
+        
+      </div>
+    </div>
+  </div>
+</body>
+</html>

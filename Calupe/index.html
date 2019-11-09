@@ -1,39 +1,47 @@
 <!DOCTYPE html>
 <!--
-Created using JS Bin
-http://jsbin.com
-
-Copyright (c) 2019 by anonymous (http://jsbin.com/vobeliquho/1/edit)
-
-Released under the MIT license: http://jsbin.mit-license.org
+Criado em outubro de 2019.
+Copyright (c) Universidade de Pernambuco,
+Bacharelado em Engenharia de Software &
+Licenciatura em Ciência da Computação.
 -->
-<meta name="robots" content="noindex">
-<html>
+<html lang="pt-BR">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
+  <meta name="robots" content="noindex">
   <title>UPE - Calupe</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  
   <!-- Arquivos locais a serem carregados pela página. -->
+  <link rel="shortcut icon" type="image/png" href="static/img/favicon.ico">
+  <link rel="stylesheet" href="static/styles/bootstrap.min.css">
   <link rel="stylesheet" href="static/styles/calupe.style.css">
-  <link rel="stylesheet" href="static/styles/calupe.calendario.css">
+  <link rel="stylesheet" href="static/styles/calupe.pages.css">
+  <link rel="stylesheet" href="static/styles/font-awesome.min.css">
+  <link rel="stylesheet" href="static/styles/gijgo.min.css">
+  
+  <script src="static/scripts/jquery-3.3.1.min.js"></script>
+  <script src="static/scripts/popper.min.js"></script>
+  <script src="static/scripts/bootstrap.min.js"></script>
   <script src="static/scripts/calupe.utils.js"></script>
   <script src="static/scripts/calupe.design.js"></script>
+  <script src="static/scripts/gijgo.js"></script>
+  
 </head>
 <body>
   <div>
     <header class="mainTopDiv">
-      <div class="upeLogo"></div>
+      <div class="upeRelated d-flex justify-content-center">
+        <a class="upeSiga" href="https://www.siga.upe.br/upe/index.jsp"></a>
+        <a class="upeLogo" href="http://www.upe.br"></a>
+      </div>
       <div class="userDetails">
         <div class="mainMenuButton" onclick="ShowMainMenuAndBlockScreen();"></div>
         <a href="javascript:SysLoadPageAsync(SYS_PAGE_LABORATORY_POLICY);" class="itemsMenu">Política de uso dos laboratórios</a>
         <a href="javascript:SysLoadPageAsync(SYS_PAGE_CONTACT_US);" class="itemsMenu">Fale conosco</a>
         <a href="javascript:SysLoadPageAsync(SYS_PAGE_ABOUT_CALUPE);" class="itemsMenu">Sobre o CALUPE</a>
       </div>
-      <div class="userSettings">
+      <div device-uuid="fa2dba07" class="userSettings d-flex justify-content-between align-items-center text-info">
         <!--
         Inserir aqui as informações do usuário, como nome por exemplo.
         -->
@@ -46,7 +54,7 @@ Released under the MIT license: http://jsbin.mit-license.org
         <a href="javascript:SysLoadPageAsync(SYS_PAGE_RESERVES);">Reservas</a>
         <a href="javascript:SysLoadPageAsync(SYS_PAGE_LABORATORIES);">Laboratórios</a>
         <a href="javascript:SysLoadPageAsync(SYS_PAGE_MY_DATA);">Meus dados</a>
-        <a href="javascript:SysLoadPageAsync(SYS_PAGE_PREFERENCES);">Preferências</a>
+        <a href="javascript:SysLoadPageAsync(SYS_PAGE_MONITORING);">Monitoria</a>
       </div>
     </div>
       <div id="bgContainer" onclick="OnBackgroundTriggered();"></div>

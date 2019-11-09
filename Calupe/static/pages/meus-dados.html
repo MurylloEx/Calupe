@@ -1,1 +1,47 @@
-meus dados
+<div class="container-fluid">
+    <div class="d-flex m-1">
+        <h1>Meus dados <i class="fa fa-user-o" aria-hidden="true"></i></h1>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <div class="w-100">
+                <b class="text-secondary">CPF</b>
+                <input device-type="cpfinput" type="text" class="form-control mb-2" placeholder="CPF">
+                <b class="text-secondary">Data de criação</b>
+                <input device-type="creationinput" type="text" class="form-control mb-2" placeholder="Data de criação" disabled="disabled">
+                <b class="text-secondary">Email</b>
+                <input device-type="emailinput" type="text" class="form-control mb-2" placeholder="Email">
+                <b class="text-secondary">Id da conta</b>
+                <input device-type="idinput" type="text" class="form-control mb-2" placeholder="Id da conta" disabled="disabled">
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="w-100">
+                <b class="text-secondary">Nome de usuário</b>
+                <input device-type="usernameinput" type="text" class="form-control mb-2" placeholder="Nome">
+                <b class="text-secondary">Senha</b>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <input device-type="passwordcheck" type="checkbox" aria-label="Exibir senha" title="Exibir ou ocultar senha">
+                        </div>
+                    </div>
+                    <input device-type="passwordinput" type="password" class="form-control" aria-label="Senha" placeholder="Senha" value="Senha">
+                </div>
+                <b class="text-secondary">Telefone</b>
+                <input device-type="phoneinput" type="text" class="form-control mb-2" placeholder="Telefone">
+                <b class="text-secondary">Papéis/permissões</b>
+                <button class="btn btn-secondary form-control" type="button" data-toggle="collapse" data-target="#permissions" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-eye" aria-hidden="true"></i> Exibir minhas permissões</button>
+                <div class="collapse" id="permissions">
+                    <div device-type="permissions" class="card card-body">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="w-100 border mt-1 mb-2"></div>
+    <div class="d-flex w-100 pb-3">
+        <button device-type="save" class="btn btn-sm btn-success mr-2" type="button" title="Salva as informações alteradas"><i class="fa fa-check" aria-hidden="true"></i> Salvar dados</button>
+        <button device-type="discard" class="btn btn-sm btn-danger" type="button" title="Reverte as alterações feitas até agora"><i class="fa fa-undo" aria-hidden="true"></i> Reverter alterações</button>
+    </div>
+</div>

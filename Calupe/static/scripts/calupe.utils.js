@@ -1,91 +1,30 @@
-var Base64 = {
-    _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-    encode: function(e) {
-        var t = "";
-        var n, r, i, s, o, u, a;
-        var f = 0;
-        e = Base64._utf8_encode(e);
-        while (f < e.length) {
-            n = e.charCodeAt(f++);
-            r = e.charCodeAt(f++);
-            i = e.charCodeAt(f++);
-            s = n >> 2;
-            o = (n & 3) << 4 | r >> 4;
-            u = (r & 15) << 2 | i >> 6;
-            a = i & 63;
-            if (isNaN(r)) {
-                u = a = 64
-            } else if (isNaN(i)) {
-                a = 64
-            }
-            t = t + this._keyStr.charAt(s) + this._keyStr.charAt(o) + this._keyStr.charAt(u) + this._keyStr.charAt(a)
+const SERVER_ADDR = "http://200.196.181.164";
+
+/**
+ * @see https://ourcodeworld.com/articles/read/188/encode-and-decode-html-entities-using-pure-javascript
+ */
+var htmlentities = {
+    /**
+     * Converts a string to its html characters completely.
+     *
+     * @param {String} str String with unescaped HTML characters
+     **/
+    encode: function (str) {
+        let buf = [];
+        for (let i = str.length - 1; i >= 0; i--) {
+            buf.unshift(['&#', str[i].charCodeAt(), ';'].join(''));
         }
-        return t
+        return buf.join('');
     },
-    decode: function(e) {
-        var t = "";
-        var n, r, i;
-        var s, o, u, a;
-        var f = 0;
-        e = e.replace(/[^A-Za-z0-9+/=]/g, "");
-        while (f < e.length) {
-            s = this._keyStr.indexOf(e.charAt(f++));
-            o = this._keyStr.indexOf(e.charAt(f++));
-            u = this._keyStr.indexOf(e.charAt(f++));
-            a = this._keyStr.indexOf(e.charAt(f++));
-            n = s << 2 | o >> 4;
-            r = (o & 15) << 4 | u >> 2;
-            i = (u & 3) << 6 | a;
-            t = t + String.fromCharCode(n);
-            if (u != 64) {
-                t = t + String.fromCharCode(r)
-            }
-            if (a != 64) {
-                t = t + String.fromCharCode(i)
-            }
-        }
-        t = Base64._utf8_decode(t);
-        return t
-    },
-    _utf8_encode: function(e) {
-        e = e.replace(/rn/g, "n");
-        var t = "";
-        for (var n = 0; n < e.length; n++) {
-            var r = e.charCodeAt(n);
-            if (r < 128) {
-                t += String.fromCharCode(r)
-            } else if (r > 127 && r < 2048) {
-                t += String.fromCharCode(r >> 6 | 192);
-                t += String.fromCharCode(r & 63 | 128)
-            } else {
-                t += String.fromCharCode(r >> 12 | 224);
-                t += String.fromCharCode(r >> 6 & 63 | 128);
-                t += String.fromCharCode(r & 63 | 128)
-            }
-        }
-        return t
-    },
-    _utf8_decode: function(e) {
-        var t = "";
-        var n = 0;
-        var r = c1 = c2 = 0;
-        while (n < e.length) {
-            r = e.charCodeAt(n);
-            if (r < 128) {
-                t += String.fromCharCode(r);
-                n++
-            } else if (r > 191 && r < 224) {
-                c2 = e.charCodeAt(n + 1);
-                t += String.fromCharCode((r & 31) << 6 | c2 & 63);
-                n += 2
-            } else {
-                c2 = e.charCodeAt(n + 1);
-                c3 = e.charCodeAt(n + 2);
-                t += String.fromCharCode((r & 15) << 12 | (c2 & 63) << 6 | c3 & 63);
-                n += 3
-            }
-        }
-        return t
+    /**
+     * Converts an html characterSet into its original character.
+     *
+     * @param {String} str htmlSet entities
+     **/
+    decode: function (str) {
+        return str.replace(/&#(\d+);/g, function (match, dec) {
+            return String.fromCharCode(dec);
+        });
     }
 }
 
@@ -101,10 +40,10 @@ var CookieSessionManager = {
      * @param {number} cookieDurationInMsec 
      * @param {string} cookiePath 
      */
-    SetCookie: function(cookieName, cookieValue, cookieDurationInMsec, cookiePath){
-        var date = new Date();
+    SetCookie: function (cookieName, cookieValue, cookieDurationInMsec, cookiePath) {
+        let date = new Date();
         date.setTime(date.getTime() + cookieDurationInMsec);
-        if (this.GetCookie(cookieName) == null){
+        if (this.GetCookie(cookieName) == null) {
             document.cookie = cookieName + "=" + cookieValue + "; expires=" + date.toUTCString() + "; path=" + cookiePath + ";";
         }
     },
@@ -113,12 +52,12 @@ var CookieSessionManager = {
      * 
      * @param {string} cookieName 
      */
-    GetCookie: function(cookieName){
-        var cookies = document.cookie.split(";");
-        for (k = 0; k < cookies.length; k++){
+    GetCookie: function (cookieName) {
+        let cookies = document.cookie.split(";");
+        for (k = 0; k < cookies.length; k++) {
             var cookieTmp = cookies[k].trim();
-            if (cookieTmp.indexOf(cookieName) == 0){
-                return cookieTmp.substring(cookieName.length+1, cookieTmp.length);
+            if (cookieTmp.indexOf(cookieName) == 0) {
+                return cookieTmp.substring(cookieName.length + 1, cookieTmp.length);
             }
         }
         return null;
@@ -129,15 +68,182 @@ var CookieSessionManager = {
      * @param {string} cookieName 
      * @param {string} cookiePath 
      */
-    DeleteCookie: function(cookieName, cookiePath){
-        var date = new Date();
-        date.setTime(date.getTime() - 100*365*24*60*60*1000);
+    DeleteCookie: function (cookieName, cookiePath) {
+        let date = new Date();
+        date.setTime(date.getTime() - 100 * 365 * 24 * 60 * 60 * 1000);
         document.cookie = cookieName + "=; expires=" + date.toUTCString() + "; path=" + cookiePath + ";";
     }
 }
 
 /**
- * Transforma em Base64 a string username e password n vezes onde o retorno é igual a um JSON reutilizável.
+ * Programado por Muryllo  12/10/2019 às 18:13
+ */
+var LocalStorageManager = {
+    /**Define ou cria um novo item e atribui a ele um valor.
+     * 
+     * @param {string} itemName Nome do item armazenado.
+     * @param {string} itemValue Valor do item de armazenamento.
+     */
+    SetItem: (itemName, itemValue) => {
+        window.localStorage.setItem(itemName, itemValue);
+    },
+    /**Recupera o valor de um item armazenado.
+     * 
+     * @param {string} itemName Nome do item armazenado.
+     */
+    GetItem: (itemName) => {
+        return window.localStorage.getItem(itemName);
+    },
+    /**Deleta um item armazenado.
+     * 
+     * @param {string} itemName Nome do item armazenado.
+     */
+    DeleteItem: (itemName) => {
+        window.localStorage.removeItem(itemName);
+    },
+    /**
+     * Apaga todos os itens armazenados.
+     */
+    ClearItems: () => {
+        window.localStorage.clear();
+    }
+}
+
+/**
+ * Programado por Muryllo  12/10/2019 às 18:30
+ */
+var SessionStorageManager = {
+    /**Define ou cria um novo item e atribui a ele um valor.
+     * 
+     * @param {string} itemName Nome do item armazenado.
+     * @param {string} itemValue Valor do item de armazenamento.
+     */
+    SetItem: (itemName, itemValue) => {
+        window.sessionStorage.setItem(itemName, itemValue);
+    },
+    /**Recupera o valor de um item armazenado.
+     * 
+     * @param {string} itemName Nome do item armazenado.
+     */
+    GetItem: (itemName) => {
+        return window.sessionStorage.getItem(itemName);
+    },
+    /**Deleta um item armazenado.
+     * 
+     * @param {string} itemName Nome do item armazenado.
+     */
+    DeleteItem: (itemName) => {
+        window.sessionStorage.removeItem(itemName);
+    },
+    /**
+     * Apaga todos os itens armazenados.
+     */
+    ClearItems: () => {
+        window.sessionStorage.clear();
+    }
+}
+
+/**Converte os valores especificados em um DateTime (Date).
+ * 
+ * @param {number} day Dia.
+ * @param {number} month Mês.
+ * @param {number} year Ano.
+ * @param {number} hours Horas.
+ * @param {number} minutes Minutos.
+ * @param {number} seconds Segundos.
+ */
+function ConvertToDateTime(day, month, year, hours, minutes, seconds){
+    return new Date(year, month-1, day, hours, minutes, seconds, 0);
+}
+
+/**Converte uma data em padrão 
+ * 
+ * @param {Date} dateObj Objeto contendo a data.
+ */
+function ConvertToDateTimeString(dateObj){
+    return dateObj.getFullYear() + "-" + ((dateObj.getMonth() + 1) < 10 ? "0" + (dateObj.getMonth() + 1) : (dateObj.getMonth() + 1)) + "-" + (dateObj.getDate() < 10 ? "0" + dateObj.getDate() : dateObj.getDate()) + "T" + (dateObj.getHours() < 10 ? "0" + dateObj.getHours() : dateObj.getHours()) + ":" + (dateObj.getMinutes() < 10 ? "0" + dateObj.getMinutes() : dateObj.getMinutes());
+}
+
+/**Codifica uma string UTF16 em uma string Base64.
+ * 
+ * @param {string} sString String em UTF16.
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding#The_.22Unicode_Problem.22
+ */
+function Base64EncodeUTF16(sString) {
+    let aUTF16CodeUnits = new Uint16Array(sString.length);
+    Array.prototype.forEach.call(aUTF16CodeUnits, function (el, idx, arr) { arr[idx] = sString.charCodeAt(idx); });
+    return btoa(String.fromCharCode.apply(null, new Uint8Array(aUTF16CodeUnits.buffer)));
+}
+
+/**Decodifica uma string Base64 em uma string UTF16.
+ * 
+ * @param {string} sBase64 String em Base64.
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding#The_.22Unicode_Problem.22
+ */
+function Base64DecodeUTF16(sBase64) {
+    let sBinaryString = atob(sBase64), aBinaryView = new Uint8Array(sBinaryString.length);
+    Array.prototype.forEach.call(aBinaryView, function (el, idx, arr) { arr[idx] = sBinaryString.charCodeAt(idx); });
+    return String.fromCharCode.apply(null, new Uint16Array(aBinaryView.buffer));
+}
+
+/**RC4 symmetric cipher encryption/decryption
+ *
+ * @license Public Domain
+ * @param {string} key - secret key for encryption/decryption
+ * @param {string} str - string to be encrypted/decrypted
+ * @return {string}
+ */
+function RC4(key, str) {
+    let s = [];
+    let j = 0;
+    let x;
+    let res = '';
+    for (let i = 0; i < 256; i++) {
+        s[i] = i;
+    }
+    for (i = 0; i < 256; i++) {
+        j = (j + s[i] + key.charCodeAt(i % key.length)) % 256;
+        x = s[i];
+        s[i] = s[j];
+        s[j] = x;
+    }
+    i = 0;
+    j = 0;
+    for (let y = 0; y < str.length; y++) {
+        i = (i + 1) % 256;
+        j = (j + s[i]) % 256;
+        x = s[i];
+        s[i] = s[j];
+        s[j] = x;
+        res += String.fromCharCode(str.charCodeAt(y) ^ s[(s[i] + s[j]) % 256]);
+    }
+    return res;
+}
+
+/**Gera um UUID hexadecimal de comprimento variável.
+ * 
+ * @param {number} length Tamanho do UUID a ser gerado.
+ */
+function Uuid(length){
+    if (length > 0){
+        let charkeys = "0123456789abcdef";
+        let uuid = "";
+        for (let k = 0; k < length; k++){
+            for (let j = 0; j < 8; j++){
+                uuid += charkeys.charAt(Math.floor(Math.random() * (charkeys.length)));
+            }
+            if (k != (length - 1)){
+                uuid += "-";
+            }
+        }
+        return uuid;
+    }
+    else{
+        return null;
+    }
+}
+
+/**Transforma em Base64 a string username e password n vezes onde o retorno é igual a um JSON reutilizável.
  * 
  * RETORNO: JSON OBJETO CONTENDO A SESSÃO.
  * 
@@ -145,30 +251,25 @@ var CookieSessionManager = {
  * 
  * @param {string} user Usuário (email do usuário).
  * @param {string} password Senha da conta do usuário.
- * @param {number} n Número de iterações de codificação em Base64 das credenciais.
  * @param {*} reserved Parâmetro reservado, deve passar NULL.
+ * @param {string} secretKey Chave secreta para criptografia da sessão.
  */
-function CreateSession(user, password, n, reserved){
-    let encUser = user;
-    let encPass = password;
-    for (k = 0; k < n; k++){
-        encUser = Base64.encode(encUser);
-        encPass = Base64.encode(encPass);
-    }
+function CreateSession(user, password, reserved, secretKey) {
+    let encUser = Base64EncodeUTF16(RC4(secretKey, user));
+    let encPass = Base64EncodeUTF16(RC4(secretKey, password));
     return JSON.stringify({
         ul: encUser.length,
         pl: encPass.length,
-        crd: Base64.encode(encUser.concat(encPass)),
+        crd: Base64EncodeUTF16(encUser.concat(encPass)),
         reserved1: reserved
     });
 }
 
-/**
- * Inicia uma nova sessão de usuário a partir de um objeto de sessão.
+/**Inicia uma nova sessão de usuário a partir de um objeto de sessão.
  * 
  * @param {JSON} sessionObject Objeto contendo a sessão do usuário.
  */
-function StartSession(sessionObject){
+function StartSession(sessionObject) {
     let sessObj = JSON.parse(sessionObject);
     let ulc = sessObj.ul;
     let plc = sessObj.pl;
@@ -177,24 +278,15 @@ function StartSession(sessionObject){
     CookieSessionManager.SetCookie("pl", plc, 0x5265C00, "/");
     CookieSessionManager.SetCookie("reserv1", sessObj.reserved1, 0x5265C00, "/");
 }
-/**
- * Lê a sessão atual e retorna um objeto contendo as credenciais do usuário.
- * 
- * @param {number} n Número de iterações de codificação em Base64 das credenciais.
+
+/**Lê a sessão atual e retorna um objeto contendo as credenciais do usuário.
+ * @param {string} secretKey Chave secreta usada na criptografia simétrica do objeto de sessão.
  */
-function ReadCurrentSession(n){
-    let __ul = CookieSessionManager.GetCookie("ul");
-    let __pl = CookieSessionManager.GetCookie("pl");
-    let __crd = Base64.decode(CookieSessionManager.GetCookie("crd"));
-    let __user = __crd.substr(0, __ul);
-    let __pass = __crd.substr(__ul, __pl);
-    for (k = 0; k < n; k++){
-        __user = Base64.decode(__user);
-        __pass = Base64.decode(__pass);
-    }
+function ReadCurrentSession(secretKey) {
+    let __crd = Base64DecodeUTF16(CookieSessionManager.GetCookie("crd"));
     return {
-        user: __user,
-        password: __pass,
+        user: RC4(secretKey, Base64DecodeUTF16(__crd.substr(0, CookieSessionManager.GetCookie("ul")))),
+        password: RC4(secretKey, Base64DecodeUTF16(__crd.substr(CookieSessionManager.GetCookie("ul"), CookieSessionManager.GetCookie("pl")))),
         reserved1: CookieSessionManager.GetCookie("reserv1")
     };
 }
@@ -202,7 +294,7 @@ function ReadCurrentSession(n){
 /**
  * Destrói a sessão do usuário.
  */
-function DestroySession(){
+function DestroySession() {
     CookieSessionManager.DeleteCookie("crd", "/");
     CookieSessionManager.DeleteCookie("ul", "/");
     CookieSessionManager.DeleteCookie("pl", "/");
@@ -210,15 +302,22 @@ function DestroySession(){
 }
 
 /**
+ * Retorna o estado da sessão, se está aberta ou fechada.
+ */
+function SessionState(){
+    return (CookieSessionManager.GetCookie("crd") != null && CookieSessionManager.GetCookie("ul") != null && CookieSessionManager.GetCookie("pl") != null);
+}
+
+/**
  * Retorna o texto associado a qualquer erro interno do Calupe.
  * 
  * Programado por Muryllo e Emílio
  * 
- * @param {*} message A mensagem de status retornada pelo Calupe.
+ * @param {string} message A mensagem de status retornada pelo Calupe.
  */
-function GetMessageString(message){
-    if (typeof(message) == "string"){
-        switch (message.toUpperCase()){
+function GetMessageString(message) {
+    if (typeof (message) == "string") {
+        switch (message.toUpperCase()) {
 
             // --> USUÁRIOS <--
             //Codificado 26/08/19 às 21:36 por Muryllo
@@ -242,8 +341,8 @@ function GetMessageString(message){
                 return "Endereço de email não pode estar em branco. Forneça um email válido.";
             case "calupe.api.msg.error.user.email.is.unique.value".toUpperCase():
                 return "Endereço de email não pode ser um valor único. Forneça um email no formato example@mail.com.";
-            case "calupe.api.msg.error.user.has.relationships".toUpperCase():
-                return "Há correlacionamento.";
+            case "calupe.api.msg.error.user.has.reservation.to.expire".toUpperCase():
+                return "Usuário tem reservas expirando.";
             case "calupe.api.msg.error.user.is.deactivated".toUpperCase():
                 return "O usuário está desativado ou inativo. Solicite mais informações a algum administrador do Calupe.";
             case "calupe.api.msg.error.user.name.is.not.blank".toUpperCase():
@@ -276,7 +375,7 @@ function GetMessageString(message){
                 return "Atenção! Lista de usuários está vazia.";
             case "calupe.api.msg.warning.user.no.has.been.removed".toUpperCase():
                 return "Atenção! O usuário não foi removido.";
-            
+
             // --> FILTROS <--
             //Codificado 26/08/19 às 22:03 por Muryllo.
             //Note que a tradução pode ter ficado ambígua.
@@ -318,7 +417,7 @@ function GetMessageString(message){
                 return "Atenção! A lista de laboratórios está vazia.";
             case "calupe.api.msg.warning.laboratory.no.has.been.removed".toUpperCase():
                 return "Atenção! Laboratório não foi removido.";
-            
+
             // --> RESERVAS <--
             //Codificado por Emílio dia 26/08/19.
             //Note que a tradução pode ter ficado ambígua.
@@ -388,23 +487,61 @@ function GetMessageString(message){
                 return "Cargos ou atribuições não encontradas.";
             case "calupe.api.msg.error.unexpected".toUpperCase():
                 return "Erro inesperado do servidor.";
-
+            case "calupe.api.msg.error.reservation.is.expired".toUpperCase():
+                return "A reserva já expirou.";
             default:
-                return "O servidor retornou um erro desconhecido.";                                                                                                                                
+                return "O servidor retornou um erro desconhecido.";
         }
     }
-    else{
+    else {
         return "O servidor retornou um erro desconhecido.";
     }
 }
 
-//Define um valor htmlText a ser posto em um element de id elementId.
-/**
+/**Retorna o objeto de sessão da API Calupe (dados do usuário).
+ * 
+ * @param {string} sKey Chave secreta
+ * @return {Promise} Dados do usuário.
+ */
+async function ReadUserData(sKey) {
+    return new Promise(resolve => {
+        let calEvts = new CalupeEvents();
+        calEvts.OnCalupeAuthSuccess = (dataObj) => {
+            resolve(dataObj);
+        }
+        calEvts.OnRaiseCriticalError = (xhr, ajaxOptions, result) => {
+            resolve(null);
+        }
+        CalupeInternalAPI.CalupeAuth0(calEvts, ReadCurrentSession(sKey).user, ReadCurrentSession(sKey).password);
+    });
+}
+
+/**Retorna um valor booleano indicando se o usuário logado é administrator ou não.
+ * 
+ * @param {string} sKey Chave secreta
+ * @return {Promise} Valor booleano.
+ */
+async function IsAdministrator(sKey){
+    let dataObj = await ReadUserData(sKey);
+    if (dataObj != null && dataObj != undefined) {
+        for (let k = 0; k < dataObj.papeis.length; k++){
+            if (dataObj.papeis[k].nome.toUpperCase() == "ADMINISTRADOR"){
+                return true;
+            }
+        }
+        return false
+    }
+    else{
+        return false;
+    }
+}
+
+/**Define um valor htmlText a ser posto em um element de id elementId.
  * 
  * @param {string} elementId ID do elemento a ser modificado.
  * @param {string} htmlText Valor contendo HTML em forma de string.
  */
-function SetHtmlById(elementId, htmlText){
+function SetHtmlById(elementId, htmlText) {
     $("#".concat(elementId)).html(htmlText);
 }
 
@@ -422,8 +559,10 @@ function SetHtmlById(elementId, htmlText){
  * @param {*} dataObj Dados a serem enviados, caso não haja passe null;
  * @param {string} dataObjType Tipo de dados a ser enviado, caso haja. Caso não haja, passe null.
  * @param {object} reqHeaders Cabeçalhos a serem enviados na requisição.
+ * @param {*} AUTH_USERNAME Usuário usado na autenticação do cabeçalho Authorization.
+ * @param {*} AUTH_PASSWORD Senha usada na autenticação do cabeçalho Authorization.
  */
-function OpenAjax(remoteAddr, method, successCallback, errorCallback, dataObj, dataObjType, reqHeaders){
+function OpenAjax(remoteAddr, method, successCallback, errorCallback, dataObj, dataObjType, reqHeaders, AUTH_USERNAME, AUTH_PASSWORD) {
     return $.ajax({
         url: remoteAddr,
         type: method,
@@ -431,7 +570,11 @@ function OpenAjax(remoteAddr, method, successCallback, errorCallback, dataObj, d
         error: errorCallback,
         data: dataObj,
         dataType: dataObjType,
-        headers: reqHeaders
+        headers: reqHeaders,
+        crossDomain:true,
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", "Basic " + btoa(AUTH_USERNAME + ":" + AUTH_PASSWORD));
+        }
     });
 }
 
@@ -442,131 +585,386 @@ function OpenAjax(remoteAddr, method, successCallback, errorCallback, dataObj, d
 var CalupeInternalAPI = {
 
     //Public API functions;
-    /**
+    /**SUCESSO NO TESTE.
      * 
      * @param {CalupeEvents} pcalupeEvts 
      */
-    RetrieveLabs:function(pcalupeEvts){
-        return OpenAjax("http://54.38.226.104/CalupeAPI/laboratorios", "GET", pcalupeEvts.OnRetrieveLabs, pcalupeEvts.OnRaiseCriticalError, null, null, null).readyState;
+    RetrieveLabs: function (pcalupeEvts) {
+        return OpenAjax(SERVER_ADDR + "/CalupeAPI/laboratorios/", "GET", 
+        pcalupeEvts.OnRetrieveLabs, 
+        pcalupeEvts.OnRaiseCriticalError, 
+        null, null, {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Headers': 'x-requested-with'
+        }, null, null).readyState;
     },
 
-    /**
+    /**SUCESSO NO TESTE.
      * 
      * @param {CalupeEvents} pcalupeEvts
      * @param {number} labId 
      */
-    RetrieveLabById:function(pcalupeEvts, labId){
-        return OpenAjax("http://54.38.226.104/CalupeAPI/laboratorios/" + labId.toString(), "GET", pcalupeEvts.OnRetrieveLabById, pcalupeEvts.OnRaiseCriticalError, null, null, null).readyState;
+    RetrieveLabById: function (pcalupeEvts, labId) {
+        return OpenAjax(SERVER_ADDR + "/CalupeAPI/laboratorios/" + labId, "GET", 
+        pcalupeEvts.OnRetrieveLabById, 
+        pcalupeEvts.OnRaiseCriticalError, 
+        null, null, {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Headers': 'x-requested-with'
+        }, null, null).readyState;
     },
 
-    /**
+    /**SUCESSO NO TESTE.
      * 
      * @param {CalupeEvents} pcalupeEvts 
+     * @param {number} month
+     * @param {number} year
      */
-    RetrieveReservs:function(pcalupeEvts){
-        return OpenAjax("http://54.38.226.104/CalupeAPI/reservas", "GET", pcalupeEvts.OnRetrieveReservs, pcalupeEvts.OnRaiseCriticalError, null, null, null).readyState;
+    RetrieveReservs: function (pcalupeEvts, month, year) {
+        return OpenAjax(SERVER_ADDR + "/CalupeAPI/reservas?mes=" + month + "&ano=" + year, "GET", 
+        pcalupeEvts.OnRetrieveReservs, 
+        pcalupeEvts.OnRaiseCriticalError, 
+        null, null, {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Headers': 'x-requested-with'
+        }, null, null).readyState;
     },
 
-    /**
+    /**SUCESSO NO TESTE.
      * 
      * @param {CalupeEvents} pcalupeEvts 
      * @param {number} reservId 
      */
-    RetrieveReservById:function(pcalupeEvts, reservId){
-        return OpenAjax("http://54.38.226.104/CalupeAPI/reservas/" + reservId.toString(), "GET", pcalupeEvts.OnRetrieveReservsById, pcalupeEvts.OnRaiseCriticalError, null, null, null).readyState;
-    },
-
-    //Protected by ADMIN permission functions;
-    /**
-     * 
-     * @param {CalupeEvents} pcalupeEvts 
-     */
-    RetrieveAllUsers:function(pcalupeEvts, username, password, userEmail, userCpf, phone){
-        return OpenAjax("http://54.38.226.104/CalupeAPI/usuarios/", 
-        "POST", 
-        pcalupeEvts.OnRegisterNewUser, 
-        pcalupeEvts.OnRaiseCriticalError, 
-        {
-            nome: username,
-            senha: password,
-            email: userEmail,
-            cpf: userCpf,
-            telefone:phone
-        }, "json", { 
+    RetrieveReservById: function (pcalupeEvts, reservId) {
+        return OpenAjax(SERVER_ADDR + "/CalupeAPI/reservas/" + reservId, "GET",
+        pcalupeEvts.OnRetrieveReservsById,
+        pcalupeEvts.OnRaiseCriticalError,
+        null, null, {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Headers':'x-requested-with'
-        }).readystate;
+            'Access-Control-Allow-Headers': 'x-requested-with'
+        }, null, null).readyState;
     },
 
-    RetrieveUserById:function(pcalupeEvts){
+    /**SUCESSO NO TESTE
+     * 
+     * @param {CalupeEvents} pcalupeEvts 
+     * @param {string} userEmail 
+     * @param {string} password 
+     */
+    RetrieveAllUsers: function (pcalupeEvts, userEmail, password) {
+        return OpenAjax(SERVER_ADDR + "/CalupeAPI/usuarios/",
+            "GET",
+            pcalupeEvts.OnRegisterNewUser,
+            pcalupeEvts.OnRaiseCriticalError,
+            null, null, {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'x-requested-with'
+            }, userEmail, password).readyState;
+    },
 
+    /**SUCESSO NO TESTE.
+     * 
+     * @param {CalupeEvents} pcalupeEvts 
+     * @param {string} userEmail 
+     * @param {string} password 
+     * @param {number} userId 
+     */
+    RetrieveUserById: function (pcalupeEvts, userEmail, password, userId) {
+        return OpenAjax(SERVER_ADDR + "/CalupeAPI/usuarios/" + userId,
+            "GET",
+            pcalupeEvts.OnRegisterNewUser,
+            pcalupeEvts.OnRaiseCriticalError,
+            null, null, {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'x-requested-with'
+            }, userEmail, password).readyState;
     },
 
     //POST functions;
-    RegisterNewUser:function(pcalupeEvts){
-        
+
+    /**SUCESSO NO TESTE.
+     * 
+     * @param {CalupeEvents} pcalupeEvts 
+     * @param {string} userEmail 
+     * @param {string} password 
+     * @param {string} targetUserEmail 
+     * @param {string} targetUserPassword 
+     * @param {string} targetUsername 
+     * @param {string} targetUserPhone 
+     * @param {string} targetUserCpf 
+     */
+    RegisterNewUser: function (pcalupeEvts, userEmail, password, targetUserEmail, targetUserPassword, targetUsername, targetUserPhone, targetUserCpf) {
+        return OpenAjax(SERVER_ADDR + "/CalupeAPI/usuarios/",
+            "POST",
+            pcalupeEvts.OnRegisterNewUser,
+            pcalupeEvts.OnRaiseCriticalError,
+            JSON.stringify({ email: targetUserEmail, senha: targetUserPassword, nome: targetUsername, cpf: targetUserCpf, telefone: targetUserPhone }),
+            "json", {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'x-requested-with'
+            }, userEmail, password).readyState;
     },
 
-    RegisterNewLab:function(pcalupeEvts){
-
+    /**SUCESSO NO TESTE.
+     * 
+     * @param {CalupeEvents} pcalupeEvts 
+     * @param {string} userEmail 
+     * @param {string} password 
+     * @param {string} description 
+     * @param {string} capacity 
+     */
+    RegisterNewLab: function (pcalupeEvts, userEmail, password, description, capacity) {
+        return OpenAjax(SERVER_ADDR + "/CalupeAPI/laboratorios/",
+            "POST",
+            pcalupeEvts.OnRegisterNewUser,
+            pcalupeEvts.OnRaiseCriticalError,
+            JSON.stringify({ descricao: description, capacidade: capacity }),
+            "json", {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'x-requested-with'
+            }, userEmail, password).readyState;
     },
 
-    RegisterNewReserv:function(pcalupeEvts){
-
+    /**SUCESSO NO TESTE.
+     * 
+     * @param {CalupeEvents} pcalupeEvts 
+     * @param {string} userEmail 
+     * @param {string} password 
+     * @param {number} userId 
+     * @param {string} laboratoryId 
+     * @param {string} startDate 
+     * @param {string} endDate 
+     */
+    RegisterNewReserv: function (pcalupeEvts, userEmail, password, userId, laboratoryId, startDate, endDate) {
+        return OpenAjax(SERVER_ADDR + "/CalupeAPI/reservas/",
+            "POST",
+            pcalupeEvts.OnRegisterNewReserv,
+            pcalupeEvts.OnRaiseCriticalError,
+            JSON.stringify({
+                data_inicio: startDate,
+                data_fim: endDate, quem_solicitou: { id: userId },
+                laboratorio: { id: laboratoryId }
+            }),
+            "json", {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'x-requested-with'
+            }, userEmail, password).readyState;
     },
 
-    /**
+    /**SUCESSO NO TESTE
      * Função de autenticação no Calupe.
      * 
      * @param {CalupeEvents} pcalupeEvts 
      * @param {string} userEmail 
      * @param {string} password 
      */
-    CalupeAuth0: function(pcalupeEvts, userEmail, password){
-        return OpenAjax("http://54.38.226.104/CalupeAPI/usuarios/autenticar/",
-                        "POST", pcalupeEvts.OnCallupeAuthSuccess, 
-                        pcalupeEvts.OnRaiseCriticalError, 
-                        JSON.stringify({email: userEmail, senha: password}), "json", { 
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                            'Access-Control-Allow-Headers':'x-requested-with'
-                        }).readyState;
+    CalupeAuth0: function (pcalupeEvts, userEmail, password) {
+        return OpenAjax(SERVER_ADDR + "/CalupeAPI/usuarios/autenticar/",
+            "POST", pcalupeEvts.OnCalupeAuthSuccess,
+            pcalupeEvts.OnRaiseCriticalError,
+            JSON.stringify({ email: userEmail, senha: password }), "json", {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'x-requested-with'
+            }, null, null).readyState;
+    },
+
+    //DELETE functions;
+
+    //Corrigir e implementar essa API depois.
+    /**Solicita ao servidor a exclusão de um usuário a partir do seu ID.
+     * 
+     * @param {CalupeEvents} pcalupeEvts 
+     * @param {string} userEmail 
+     * @param {string} password 
+     * @param {number} targetUserId 
+     */
+    DeleteUser: function(pcalupeEvts, userEmail, password, targetUserId){
+        return OpenAjax(SERVER_ADDR + "/CalupeAPI/usuarios/" + targetUserId, "DELETE",
+        pcalupeEvts.OnDeleteUser,
+        pcalupeEvts.OnRaiseCriticalError, null, null, {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Headers': 'x-requested-with'
+        }, userEmail, password).readyState;
+    },
+
+    /**SUCESSO NO TESTE.
+     * Solicita ao servidor a exclusão de um laboratório a partir do seu ID.
+     * 
+     * @param {CalupeEvents} pcalupeEvts 
+     * @param {string} userEmail 
+     * @param {string} password 
+     * @param {number} labId 
+     */
+    DeleteLab: function (pcalupeEvts, userEmail, password, labId){
+        return OpenAjax(SERVER_ADDR + "/CalupeAPI/laboratorios/" + labId, "DELETE", 
+        pcalupeEvts.OnDeleteLab, 
+        pcalupeEvts.OnRaiseCriticalError, null, null, {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Headers': 'x-requested-with'
+        }, userEmail, password).readyState;
+    },
+
+    /**SUCESSO NO TESTE.
+     * Solicita ao servidor a exclusão de uma reserva a partir do seu ID.
+     * 
+     * @param {CalupeEvents} pcalupeEvts 
+     * @param {string} userEmail 
+     * @param {string} password 
+     * @param {number} reservId 
+     */
+    DeleteReserv: function (pcalupeEvts, userEmail, password, reservId){
+        return OpenAjax(SERVER_ADDR + "/CalupeAPI/reservas/" + reservId, "DELETE", 
+        pcalupeEvts.OnDeleteReserv, 
+        pcalupeEvts.OnRaiseCriticalError, null, null, {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Headers': 'x-requested-with'
+        }, userEmail, password).readyState;
+    },
+
+    //PUT functions;
+    /**SUCESSO NO TESTE.
+     * 
+     * @param {CalupeEvents} pcalupeEvts 
+     * @param {string} userEmail 
+     * @param {string} password 
+     * @param {string} newTargetEmail 
+     * @param {string} newTargetPassword 
+     * @param {string} newTargetName 
+     * @param {string} newTargetCpf 
+     * @param {string} newTargetPhone 
+     * @param {number} targetUserId
+     */
+    UpdateUser: function (pcalupeEvts, userEmail, password, newTargetEmail, newTargetPassword, newTargetName, newTargetCpf, newTargetPhone, targetUserId){
+        return OpenAjax(SERVER_ADDR + "/CalupeAPI/usuarios/" + targetUserId, "PUT",
+        pcalupeEvts.OnUpdateUser,
+        pcalupeEvts.OnRaiseCriticalError,
+        JSON.stringify({email: newTargetEmail, senha: newTargetPassword, nome: newTargetName, cpf: newTargetCpf, telefone: newTargetPhone}), "json", {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Headers': 'x-requested-with'
+        }, userEmail, password).readyState;
+    },
+
+    /**SUCESSO NO TESTE.
+     * 
+     * 
+     * @param {CalupeEvents} pcalupeEvts 
+     * @param {string} userEmail 
+     * @param {string} password 
+     * @param {string} newDescription 
+     * @param {string} newCapacity 
+     * @param {number} labId
+     */
+    UpdateLab: function (pcalupeEvts, userEmail, password, newDescription, newCapacity, labId){
+        return OpenAjax(SERVER_ADDR + "/CalupeAPI/laboratorios/" + labId, "PUT",
+        pcalupeEvts.OnUpdateLab,
+        pcalupeEvts.OnRaiseCriticalError,
+        JSON.stringify({descricao: newDescription, capacidade: newCapacity}), "json", {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Headers': 'x-requested-with'
+        }, userEmail, password).readyState;
+    },
+
+    /**SUCESSO NO TESTE.
+     * Atualiza uma reserva feita. Administradores ou o próprio usuário que fez a reserva podem atualizá-la.
+     * 
+     * @param {CalupeEvents} pcalupeEvts 
+     * @param {string} userEmail 
+     * @param {string} password 
+     * @param {string} newStartDate 
+     * @param {string} newEndDate 
+     * @param {number} newRequesterId 
+     * @param {number} newLabId 
+     * @param {number} reservId 
+     */
+    UpdateReserv: function (pcalupeEvts, userEmail, password, newStartDate, newEndDate, newRequesterId, newLabId, reservId){
+        return OpenAjax(SERVER_ADDR + "/CalupeAPI/reservas/" + reservId, "PUT",
+        pcalupeEvts.OnUpdateReserv,
+        pcalupeEvts.OnRaiseCriticalError,
+        JSON.stringify({data_inicio: newStartDate, data_fim: newEndDate, quem_solicitou:{id: newRequesterId}, laboratorio:{id: newLabId}}),
+        "json", {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Headers': 'x-requested-with'
+        }, userEmail, password).readyState;
     }
+
 }
 
 class CalupeEvents {
 
-    constructor(){
-        console.log("classe instanciada!");
+    OnRetrieveLabs(data) {
+        console.log(data);
+    }
+    OnRetrieveLabById(data) {
+        console.log(data);
+    }
+    OnRetrieveReservs(data) {
+        console.log(data);
+    }
+    OnRetrieveReservsById(data) {
+        console.log(data);
+    }
+    OnRetrieveAllUsers(data) {
+        console.log(data);
+    }
+    OnRetrieveUserById(data) {
+        console.log(data);
+    }
+    OnRegisterNewUser(data) {
+        console.log(data);
+    }
+    OnRegisterNewLab(data) {
+        console.log(data);
+    }
+    OnRegisterNewReserv(data) {
+        console.log(data);
+    }
+    OnCalupeAuthSuccess(data) {
+        console.log(data);
     }
 
-    OnRetrieveLabs(data){}
-    OnRetrieveLabById(data){}
-    OnRetrieveReservs(data){}
-    OnRetrieveReservsById(data){}
-    OnRetrieveAllUsers(data){}
-    OnRetrieveUserById(data){}
-    OnRegisterNewUser(data){}
-    OnRegisterNewLab(data){}
-    OnRegisterNewReserv(data){}
-    OnCallupeAuthSuccess(data){
+
+    OnDeleteUser(data) {
+        console.log(data);
+    }
+    OnDeleteLab(data) {
+        console.log(data);
+    }
+    OnDeleteReserv(data) {
+        console.log(data);
+    }
+
+
+    OnUpdateUser(data) {
+        console.log(data);
+    }
+    OnUpdateLab(data) {
+        console.log(data);
+    }
+    OnUpdateReserv(data) {
         console.log(data);
     }
 
     //Exceções não tratadas devem ser redirecionadas aqui por padrão.
-    OnRaiseCriticalError(){}
-    
+    OnRaiseCriticalError(xhr, ajaxOptions, data) {
+        if (xhr.responseJSON != null && xhr.responseJSON != undefined){
+            console.log(xhr.responseJSON);
+        }
+    }
+
 }
-
-//var calEvt = new CalupeEvents();
-
-//console.log(CalupeInternalAPI.CalupeAuth0(calEvt, "testador@upe.br", "teste"));
-
-// var sess = CreateSession("muryllo", "123", 5, null);
-// console.log(sess);
-// StartSession(sess);
-
-// console.log(ReadCurrentSession(5));
-
-// DestroySession();

@@ -1,4 +1,4 @@
-<div align="center" style="text-align:center;">
+<div align="center">
     <h1>Calupe</h1>
     <p>Controle Administrativo dos Laboratórios da UPE</p>
 </div>

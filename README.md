@@ -1,5 +1,7 @@
-# Calupe
-Controle Administrativo dos Laboratórios da UPE
+<div align="center" style="text-align:center;">
+    <h1>Calupe</h1>
+    <p>Controle Administrativo dos Laboratórios da UPE</p>
+</div>
 <p align="center">
     <img src="https://user-images.githubusercontent.com/32225687/71791609-64645e80-3014-11ea-80ab-8892007959ff.png" alt="Calupe logo" style="display:block;">
 </p>

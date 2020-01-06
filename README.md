@@ -1,10 +1,9 @@
-<div align="center">
-    <h1>Calupe</h1>
-    <p>Controle Administrativo dos Laboratórios da UPE</p>
+<div style="display:block;">
+    <p align="center">
+        <img src="https://user-images.githubusercontent.com/32225687/71791609-64645e80-3014-11ea-80ab-8892007959ff.png" alt="Calupe logo">
+        <b>Controle Administrativo dos Laboratórios da UPE</b>
+    </p>
 </div>
-<p align="center">
-    <img src="https://user-images.githubusercontent.com/32225687/71791609-64645e80-3014-11ea-80ab-8892007959ff.png" alt="Calupe logo" style="display:block;">
-</p>
 
 ### Imagens do sistema
 

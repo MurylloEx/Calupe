@@ -1,13 +1,13 @@
 <div style="display:block;">
     <p align="center">
         <img src="https://user-images.githubusercontent.com/32225687/71791609-64645e80-3014-11ea-80ab-8892007959ff.png" alt="Calupe logo">
-    </p><br>
+    </p>
     <p align="center">
-        Controle Administrativo dos Laboratórios da UPE
+        <strong>Controle Administrativo dos Laboratórios da UPE</strong>
     </p>
 </div>
 
-### Imagens do sistema
+
 
 <p align="center">
     <img src="https://user-images.githubusercontent.com/32225687/71791737-cde46d00-3014-11ea-83a6-578e915d88d5.png" alt="Calupe logo" style="display:block;">

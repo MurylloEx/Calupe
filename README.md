@@ -2,7 +2,7 @@
     <p align="center">
         <img src="https://user-images.githubusercontent.com/32225687/71791609-64645e80-3014-11ea-80ab-8892007959ff.png" alt="Calupe logo">
     </p>
-    <p align="center">
+    <p align="center" style="text-align:center;">
         <h1>Controle Administrativo dos Laboratórios da UPE</h1>
     </p>
 </div>

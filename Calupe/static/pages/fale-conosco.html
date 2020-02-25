@@ -1,0 +1,45 @@
+<div class="container-fluid">
+  <div class="d-flex m-1">
+    <h1>Fale conosco <i class="fa fa-commenting-o" aria-hidden="true"></i></h1>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs" id="contactnav">
+        <li class="nav-item">
+          <a class="nav-link active" href="#">Contato</a>
+        </li>
+      </ul>
+    </div>
+    <div class="card-body" device-type="card-container">
+      <h5 class="card-title"><i class="fa fa-envelope" aria-hidden="true"></i> Formulário de contato</h5>
+      <div class="row">
+        <div class="col-sm">
+          <div class="w-100">
+            <b class="text-secondary">Assunto</b>
+            <input type="text" class="form-control mb-2" placeholder="Título da mensagem" device-type="subject">
+            <b class="text-secondary">Selecione o motivo</b>
+            <select class="form-control mb-2" device-type="reason">
+              <option>Solicitar instalação de software</option>
+              <option>Solicitar auxílio do monitor</option>
+              <option>Denunciar possível mau uso dos laboratórios</option>
+              <option>Comunicar falha no sistema do CALUPE</option>
+              <option>Outro(s) motivo(s)</option>
+            </select>
+            <b class="text-secondary">Número da matrícula</b>
+            <input type="text" class="form-control mb-2" placeholder="Número da matrícula" device-type="number">
+          </div>
+        </div>
+        <div class="col-sm">
+          <b class="text-secondary">Detalhes ou mensagem</b>
+          <textarea class="form-control mb-2" rows="7" placeholder="Detalhes do contato, escreva aqui do que se trata." device-type="details"></textarea>
+        </div>
+      </div>
+      <div class="w-100 border mt-1 mb-2"></div>
+      <div class="d-flex w-100 pb-3">
+        <button device-type="submit" class="btn btn-sm btn-primary mr-2" type="button" title="Envia a mensagem">
+          <i class="fa fa-envelope-open-o" aria-hidden="true"></i> Enviar mensagem
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

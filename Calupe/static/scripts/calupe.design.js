@@ -322,10 +322,39 @@ function OnMonitoringTriggered() {
               });
               $("[device-type='back']").click(loadPanel);
             });
-            $("[monitor-type='history']").click(function () {
+            $("[monitor-type='history']").click(function() {
               SetMainMenuState(false);
-              let historySearch = "<div class=\"row\"><div class=\"col-sm\"><div class=\"w-100\"> <b class=\"text-secondary\">Ano de início</b> <input device-type=\"emailinput\" type=\"number\" class=\"form-control mb-2\" placeholder=\"2019\"> <b class=\"text-secondary\">Mês de início</b> <input device-type=\"startmonth\" type=\"number\" min=\"1\" max=\"12\" class=\"form-control mb-2\" placeholder=\"Nome Sobrenome\"></div></div><div class=\"col-sm\"><div class=\"w-100\"> <b class=\"text-secondary\">Quantidade de meses</b> <input device-type=\"numbermonthsinput\" type=\"number\" min=\"1\" class=\"form-control mb-2\" placeholder=\"5\"> <b class=\"text-secondary\">Nome do usuário</b> <input device-type=\"usernameinput\" type=\"text\" class=\"form-control mb-2\" placeholder=\"Nome do Usuário\"></div></div></div><div class=\"w-100 border mt-1 mb-2\"></div><div class=\"d-flex w-100 pb-3\"> <button device-type=\"search\" class=\"btn btn-sm btn-info mr-2\" type=\"button\" title=\"Carregar histórico do usuário\"><i class=\"fa fa-search\" aria-hidden=\"true\"></i> Pesquisar</button> <button device-type=\"back\" class=\"btn btn-sm btn-danger mr-2\" type=\"button\" title=\"Voltar para a outra página\"><i class=\"fa fa-undo\" aria-hidden=\"true\"></i> Voltar</button></div>";
+              let historySearch = "<div class=\"row\"><div class=\"col-sm\"><div class=\"w-100\"> <b class=\"text-secondary\">Ano de início</b> <input device-type=\"startyear\" type=\"number\" class=\"form-control mb-2\" placeholder=\"2019\"> <b class=\"text-secondary\">Mês de início</b> <input device-type=\"startmonth\" type=\"number\" min=\"1\" max=\"12\" class=\"form-control mb-2\" placeholder=\"Mês de início\"></div></div><div class=\"col-sm\"><div class=\"w-100\"> <b class=\"text-secondary\">Quantidade de meses</b> <input device-type=\"numbermonthsinput\" type=\"number\" min=\"1\" class=\"form-control mb-2\" placeholder=\"5\"> <b class=\"text-secondary\">Nome do usuário</b> <input device-type=\"usernameinput\" type=\"text\" class=\"form-control mb-2\" placeholder=\"Nome do Usuário\"></div></div></div><div class=\"mt-1\" device-type=\"progReservs\"></div><div class=\"w-100 border mt-1 mb-2\"></div><div class=\"d-flex w-100 pb-3\"> <button device-type=\"search\" class=\"btn btn-sm btn-info mr-2\" type=\"button\" title=\"Carregar histórico do usuário\"><i class=\"fa fa-search\" aria-hidden=\"true\"></i> Pesquisar</button> <button device-type=\"back\" class=\"btn btn-sm btn-danger mr-2\" type=\"button\" title=\"Voltar para a outra página\"><i class=\"fa fa-undo\" aria-hidden=\"true\"></i> Voltar</button></div>";
               monPanel.html(historySearch);
+              let searchButton = $("[device-type='search']");
+              let progReservs = $("[device-type='progReservs']");
+              progReservs.addClass("invisible");
+              ChangeProgressBarValue("progReservs", 0);
+              let calEvts = new CalupeEvents();
+              calEvts.OnRetrieveReservsByUsernameProgressCallback = function(value, totalValue){
+                ChangeProgressBarValue("progReservs", Math.floor(100 * (value / totalValue)));
+              }
+              calEvts.OnRetrieveReservsByUsernameCompletionCallback = function(reservs){
+                console.log(reservs);
+                searchButton.removeClass("disabled");
+                searchButton.removeAttr("disabled");
+                searchButton.text("Pesquisar");
+              }
+              searchButton.click(function(){
+                CalupeInternalAPI.RetrieveReservsByUsername(calEvts, 
+                  $("[device-type='startmonth']").val(), 
+                  $("[device-type='startyear']").val(), 
+                  $("[device-type='numbermonthsinput']").val(), 
+                  $("[device-type='usernameinput']").val()
+                );
+                ChangeProgressBarValue("progReservs", 0);
+                if (progReservs.hasClass("invisible") == true){
+                  progReservs.removeClass("invisible");
+                }
+                searchButton.addClass("disabled");
+                searchButton.attr("disabled", true);
+                searchButton.text("Pesquisando");
+              });
             });
             $("[monitor-type='back']").click(loadPanel);
           });
@@ -1113,7 +1142,7 @@ function SysLoadDialogAsync(dlgBoxId, objArgs) {
         DisplayDialogBox(true, function() {
           return "<div class=\"dialogBoxInnerContainer overflow-auto p-3\" container-id=\"innerDialog\"> <b class=\"text-secondary\">Data da reserva:</b><div class=\"pb-2\"> <input device-type=\"datepicker\"></div> <b class=\"text-secondary\">Horário de início:</b><div class=\"input-group date mb-2\"> <input type=\"number\" placeholder=\"Hora\" min=\"0\" max=\"23\" class=\"form-control\" device-type=\"starthour\"> <input type=\"number\" placeholder=\"Minuto\" min=\"0\" max=\"59\" class=\"form-control\" device-type=\"startminute\"><div class=\"input-group-append\"><div class=\"input-group-text\"><i class=\"fa fa-clock-o\"></i></div></div></div> <b class=\"text-secondary\">Horário de término:</b><div class=\"input-group date mb-2\"> <input type=\"number\" placeholder=\"Hora\" min=\"0\" max=\"23\" class=\"form-control\" device-type=\"endhour\"> <input type=\"number\" placeholder=\"Minuto\" min=\"0\" max=\"59\" class=\"form-control\" device-type=\"endminute\"><div class=\"input-group-append\"><div class=\"input-group-text\"><i class=\"fa fa-clock-o\"></i></div></div></div> <b class=\"text-secondary\">Descrição:</b> <input type=\"text\" maxlength=\"32\" placeholder=\"Descrição\" class=\"form-control mb-2\" device-type=\"description\"> <b class=\"text-secondary\">Solicitante:</b> <select device-type=\"requester\" class=\"form-control mb-2\"></select> <b class=\"text-secondary\">Laboratório:</b> <select device-type=\"select\" class=\"form-control mb-2\"><option value=\"1\">Lab. 1 - Lic. em Computação</option><option value=\"2\">Lab. 2 - Escola Aplicação</option><option value=\"3\">Lab. 3 - Eng. de Software</option> </select> <button device-type=\"submit\" class=\"btn btn-primary form-control mb-3\">Solicitar reserva</button></div>";
         }, "dlgBoxId".concat(dlgBoxId), "Reservas de laboratório");
-        let beginDate = (new Date().getDate() < 10 ? "0" + new Date().getDate() : new Date().getDate()) + "/" + (new Date().getMonth()+1 < 10 ? "0" + new Date().getMonth()+1 : new Date().getMonth()+1) + "/" + new Date().getFullYear();
+        let beginDate = (new Date().getDate() < 10 ? "0" + new Date().getDate() : new Date().getDate()) + "/" + (new Date().getMonth()+1 < 10 ? "0" + (new Date().getMonth()+1) : new Date().getMonth()+1) + "/" + new Date().getFullYear();
         if (objArgs != null && typeof objArgs != "undefined"){
           let buffer = objArgs.split("/");
           beginDate = (buffer[0] < 10 ? "0" + buffer[0] : buffer[0]) + "/" + (buffer[1] < 10 ? "0" + buffer[1] : buffer[1]) + "/" + buffer[2];
@@ -1280,12 +1309,16 @@ function SysLoadDialogAsync(dlgBoxId, objArgs) {
           calEvts.OnRaiseCriticalError = function(xhr, ajaxOptions, data){
             DisplayLoadAnim(false);
             SetMainMenuState(false);
-            if (xhr.responseJSON != null && xhr.responseJSON != undefined){
-              SysLoadErrorPageAsync("Erro ao carregar as reservas!", GetMessageString(xhr.responseJSON.texto), xhr.responseJSON.texto)
+            //Verifica se está logado, caso contrário solicita o login.
+            if (!SessionState()){
+              SysLoadDialogAsync(SYS_DLG_LOGIN_FORM, null);
             }
-            else{
-              SysLoadErrorPageAsync("Erro ao carregar as reservas!", "Erro desconhecido, favor reporte na seção \"Fale conosco\".", SYS_ERROR_UNKNOWN);
-            }
+            //if (xhr.responseJSON != null && xhr.responseJSON != undefined){
+            //  SysLoadErrorPageAsync("Erro ao carregar as reservas!", GetMessageString(xhr.responseJSON.texto), xhr.responseJSON.texto)
+            //}
+            //else{
+            //  SysLoadErrorPageAsync("Erro ao carregar as reservas!", "Erro desconhecido, favor reporte na seção \"Fale conosco\".", SYS_ERROR_UNKNOWN);
+            //}
           }
           CalupeInternalAPI.RetrieveReservs(calEvts, monthArr[monthSelected.toUpperCase()], yearSelected);
           OnBackgroundTriggered();
@@ -1418,7 +1451,8 @@ function SysShowEventAsync(evId) {
             deleteBtn.text("Excluindo...");
             deleteBtn.attr("disabled", true);
             let calEvts = new CalupeEvents();
-            calEvts.OnRetrieveReservs = function(dataObj){
+            let newcalEvts = new CalupeEvents();
+            newcalEvts.OnRetrieveReservs = function(dataObj){
               for (let k in dataObj){
                 let reservDay = new Date(dataObj[k].data_inicio);
                 let labColors = {"LAB 1":"info", "LAB 2":"secondary", "LAB 3":"danger"};
@@ -1436,12 +1470,16 @@ function SysShowEventAsync(evId) {
                 SysLoadDialogAsync(SYS_DLG_LOGIN_FORM, null);
               }
             }
+            newcalEvts.OnRaiseCriticalError = function(xhr, ajaxOptions, data){
+              DisplayLoadAnim(false);
+              SetMainMenuState(false);
+            }
             calEvts.OnDeleteReserv = function(data){
               DisplayLoadAnim(true);
               SetMainMenuState(false);
               let DateObj = new Date(dataContent.data_inicio);
               CreateCalendar(DateObj.getMonth() + 1, DateObj.getFullYear(), "reservCalendId");
-              CalupeInternalAPI.RetrieveReservs(calEvts, DateObj.getMonth()+1, DateObj.getFullYear());
+              CalupeInternalAPI.RetrieveReservs(newcalEvts, DateObj.getMonth()+1, DateObj.getFullYear());
             }
             calEvts.OnRaiseCriticalError = function(xhr, ajaxOptions, data){
               DisplayLoadAnim(false);

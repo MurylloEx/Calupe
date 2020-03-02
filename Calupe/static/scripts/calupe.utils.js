@@ -477,8 +477,6 @@ function SessionState(){
 /**
  * Retorna o texto associado a qualquer erro interno do Calupe.
  * 
- * Programado por Muryllo e Emílio
- * 
  * @param {string} message A mensagem de status retornada pelo Calupe.
  */
 function GetMessageString(message) {
@@ -711,6 +709,31 @@ function SetHtmlById(elementId, htmlText) {
     $("#".concat(elementId)).html(htmlText);
 }
 
+function ChangeProgressBarValue(progBarDeviceName, newValue) {
+    let progBar = $(`[device-type='${progBarDeviceName}']`);
+    if (progBar != null || typeof progBar != "undefined"){
+        if (!progBar.hasClass("progress")){
+            progBar.addClass("progress");
+        }
+        let inside = progBar.find(`[device-type='inside-${progBarDeviceName}']`);
+        if (!(inside.length > 0)){
+            progBar.html(`<div device-type="inside-${progBarDeviceName}" class="progress-bar" role="progressbar" style="width:0;" aria-valuenow="0" aria-valuemin="0"></div>`);
+            inside = progBar.find(`[device-type='inside-${progBarDeviceName}']`);
+        }
+        if (Number(newValue) > 100 || Number(newValue) < 0){
+            return false;
+        }
+        inside.attr("role", "progressbar");
+        inside.attr("style", `width: ${newValue}%;`);
+        inside.attr("aria-valuenow", `${newValue}`);
+        inside.attr("aria-valuemin", "0");
+        inside.attr("aria-valuemax", "100");
+        inside.text(`${newValue}%`);
+        return true;
+    }
+    return false;
+}
+
 /**
  * Veja o modelo de um callback AJAX. https://stackoverflow.com/questions/377644/jquery-ajax-error-handling-show-custom-exception-messages
  * 
@@ -852,11 +875,9 @@ var CalupeInternalAPI = {
             }, userEmail, password).readyState;
     },
 
-    /**Retorna as reservas feitas nos últimos meses.
+    /**
      * 
      * @param {CalupeEvents} pcalupeEvts 
-     * @param {string} userEmail 
-     * @param {string} password 
      * @param {number} startMonth 
      * @param {number} startYear 
      * @param {number} lastNumMonths 
